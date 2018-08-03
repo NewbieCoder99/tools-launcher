@@ -244,16 +244,3 @@ function section($x,$section,$server_host)
 		}
 	}
 }
-
-function check_update()
-{
-	$VERSION_FILE 	= file(".VERSION") or die("Unable to open file!");
-	$MATCH 			= file_get_contents("https://raw.githubusercontent.com/NewbieCoder99/tools/master/.VERSION");
-	if($MATCH == $VERSION_FILE)
-	{
-		return false;
-	} else
-	{
-		return true;
-	}
-}

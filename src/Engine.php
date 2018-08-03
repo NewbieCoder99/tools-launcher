@@ -94,7 +94,6 @@ function _main_windos($wordlists,$section,$delim,$server_host,$username)
 			remove_text($wordlists,$explode_acc[0].$delim.$explode_acc[1]);
 			$i++;
 		}
-		// sleep(2);
 	}
 }
 

@@ -2,7 +2,8 @@
     "name": "xyind/tools-launcher",
     "description": "This tools launcher",
     "type": "project",
-    "license": "MIT License",
+    "license": "MIT",
     "minimum-stability": "dev",
-    "require": {}
+    "require": {},
+    "repositories": []
 }

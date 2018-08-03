@@ -2,7 +2,7 @@
 error_reporting(0);
 global $argv;
 $server_host = "http://service.fajarpunya.com/c/";
-require_once('vendor/lib-tool-account-checker/src/Engine.php');
+require_once('src/Engine.php');
 
 echo "\n";
 section('','',$server_host);

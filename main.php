@@ -30,14 +30,14 @@ if($section == "")
 			$wl = trim(fgets(fopen("php://stdin","r")));
 			if($wl == "")
 			{
-				echo "\033[34m- Masukan path file wordlists terlebih dahulu.\n";
+				echo "- Masukan path file wordlists terlebih dahulu.\n";
 			} else
 			{
 				echo "- Delimiter email dengan password yang digunakan : ";
 				$delim = trim(fgets(fopen("php://stdin","r")));
 				if(trim($delim) == "")
 				{
-					echo "\033[34m- Masukan delimiter terlebih dahulu.\n";
+					echo "- Masukan delimiter terlebih dahulu.\n";
 				} else
 				{
 					$agent = php_uname();
@@ -50,7 +50,7 @@ if($section == "")
 						echo _main_linux($wl,$section,$delim,$server_host,$username);
 					} else
 					{
-						echo "\033[34m- Your Operating System Not Supported \n";
+						echo "- Your Operating System Not Supported \n";
 					}
 				}
 			}

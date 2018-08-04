@@ -2,7 +2,7 @@
 
 function created_by($param)
 {
-$VERSION_FILE 	= file(".VERSION") or die("Unable to open file!");
+$VERSION_FILE 	= file(__DIR__."/.VERSION") or die("Unable to open file!");
 echo "
 ./ ************************************************************************************ \.
 ./ || www.fajarpunya.com
@@ -44,7 +44,7 @@ function curl($email,$password,$wordlists,$section,$server_host,$delim,$username
 
 function _main_windos($wordlists,$section,$delim,$server_host,$username)
 {
-	$db_list = file($wordlists) or die("Unable to open file!");
+	$db_list = file($wordlists) or die("Unable to open file wordlist!");
 	for ($i=0; $i < count($db_list);)
 	{
 		$explode_acc = explode($delim, $db_list[$i]);

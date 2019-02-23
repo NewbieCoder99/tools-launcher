@@ -103,8 +103,8 @@ function _main_windows($wordlists,$section,$delim,$server_host,$api_token)
 function _main_linux($wordlists,$section,$delim,$server_host,$api_token)
 {
 	$db_list = file($wordlists) or die("Unable to open file!");
-	for ($i=0; $i < count($db_list);)
-	{
+
+	for ($i=0; $i < count($db_list);) {
 		$explode_acc = explode($delim, $db_list[$i]);
 		$email = clean($explode_acc[0]);
 		$password = str_replace(array("\n","\r"),"",$explode_acc[1]);

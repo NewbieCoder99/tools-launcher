@@ -1,7 +1,7 @@
 <?php
 error_reporting(0);
 global $argv;
-$server_host = "http://larastart.web/api";
+$server_host = "https://service.fajarpunya.com/larachecker/public/api";
 require_once('src/Engine.php');
 
 echo created_by("GET TOKEN");
@@ -59,7 +59,7 @@ curl_setopt_array($ch, array(
 
 $response = curl_exec($ch);
 curl_close($ch);
-
+write_logs('token.txt', $response,'');
 echo "\n";
 echo "[+] ".$response;
 echo "\n";
